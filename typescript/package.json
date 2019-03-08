@@ -13,9 +13,10 @@
   },
   "dependencies": {
     "@types/chai": "^4.0.0",
-    "@types/node": "^7.0.27",
     "@types/mocha": "^2.2.41",
+    "@types/node": "^7.0.27",
     "chai": "^4.0.1",
+    "fp-ts": "^1.14.3",
     "mocha": "^3.4.2",
     "ts-node": "^3.0.4",
     "tslib": "^1.7.1",

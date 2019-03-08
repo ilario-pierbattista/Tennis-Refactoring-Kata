@@ -1,22 +1,91 @@
 import { TennisGame } from './TennisGame';
+import { Option } from 'fp-ts/lib/Option'
 
+export namespace TennisGame1 {
+  export type player = 'player1' | 'player2';
+
+  export type PlayerScore = {
+    player: player,
+    score: scoreType,
+  }
+
+  export type scoreType =
+    | {
+      name: 'Love',
+      value: 0
+    }
+    | {
+      name: 'Fifteen'
+      value: 1
+    }
+    | {
+      name: 'Thirty'
+      value: 2
+    }
+    | {
+      name: 'Forty',
+      value: 3
+    }
+    | {
+      name: 'Deuce',
+      value: number
+    }
+
+  export type state = { [p in player]: scoreType }
+}
+
+class GameState {
+  private constructor(readonly state: TennisGame1.state) {
+  }
+
+  public static init(): GameState {
+    return new GameState({
+      player1: {
+        name: 'Love',
+        value: 0
+      },
+      player2: {
+        name: 'Love',
+        value: 0
+      }
+    });
+  }
+
+  public point(player: TennisGame1.player): GameState {
+    switch (player) {
+      case "player1":
+        return new GameState({
+          player1: incrementScore(this.state.player1),
+          player2: this.state.player2
+        })
+      case 'player2':
+        return new GameState({
+          player1: this.state.player1,
+          player2: incrementScore(this.state.player2)
+        })
+    }
+  }
+}
+
+declare function winner(state: GameState): TennisGame1.player;
+declare function incrementScore(score: TennisGame1.scoreType): TennisGame1.scoreType;
+declare function playerFromString(name: string): TennisGame1.player;
 
 export class TennisGame1 implements TennisGame {
   private m_score1: number = 0;
   private m_score2: number = 0;
-  private player1Name: string;
-  private player2Name: string;
+  private state: GameState = GameState.init();
 
-  constructor(player1Name: string, player2Name: string) {
-    this.player1Name = player1Name;
-    this.player2Name = player2Name;
+  constructor(readonly player1Name: string, readonly player2Name: string) {
   }
 
   wonPoint(playerName: string): void {
-    if (playerName === 'player1')
+    if (playerName === 'player1') {
       this.m_score1 += 1;
-    else
+    }
+    else {
       this.m_score2 += 1;
+    }
   }
 
   getScore(): string {
@@ -36,17 +105,14 @@ export class TennisGame1 implements TennisGame {
         default:
           score = 'Deuce';
           break;
-
       }
-    }
-    else if (this.m_score1 >= 4 || this.m_score2 >= 4) {
+    } else if (this.m_score1 >= 4 || this.m_score2 >= 4) {
       const minusResult: number = this.m_score1 - this.m_score2;
       if (minusResult === 1) score = 'Advantage player1';
       else if (minusResult === -1) score = 'Advantage player2';
       else if (minusResult >= 2) score = 'Win for player1';
       else score = 'Win for player2';
-    }
-    else {
+    } else {
       for (let i = 1; i < 3; i++) {
         if (i === 1) tempScore = this.m_score1;
         else { score += '-'; tempScore = this.m_score2; }
@@ -66,6 +132,7 @@ export class TennisGame1 implements TennisGame {
         }
       }
     }
+
     return score;
   }
 }
