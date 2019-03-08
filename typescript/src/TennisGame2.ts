@@ -1,19 +1,17 @@
 import { TennisGame } from './TennisGame';
+import { GameState } from './tennis';
 
 
 export class TennisGame2 implements TennisGame {
+  private game: GameState = GameState.init()
+
   P1point: number = 0;
   P2point: number = 0;
 
   P1res: string = '';
   P2res: string = '';
 
-  private player1Name: string;
-  private player2Name: string;
-
-  constructor(player1Name: string, player2Name: string) {
-    this.player1Name = player1Name;
-    this.player2Name = player2Name;
+  constructor(readonly player1Name: string, readonly  player2Name: string) {
   }
 
   getScore(): string {
