@@ -18,8 +18,6 @@ export class TennisGame1 implements TennisGame {
   }
 
   getScore(): string {
-    compose(p => p.chain(w => some(`Win for ${w}`)), winner)
-
     const printers: ((g: GameState) => Option<string>)[] = [
       parita,
       compose(p => p.chain(w => some(`Win for ${w}`)), winner),
