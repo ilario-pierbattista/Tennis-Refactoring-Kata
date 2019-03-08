@@ -1,6 +1,7 @@
 import { TennisGame } from './TennisGame';
-import { Option, some, none } from 'fp-ts/lib/Option'
+import { Option, some, none, None } from 'fp-ts/lib/Option'
 import { GameState, playerFromString, parita, winner, advantage } from './tennis';
+import { compose } from 'fp-ts/lib/function';
 
 export class TennisGame1 implements TennisGame {
   private game: GameState = GameState.init();
@@ -17,10 +18,12 @@ export class TennisGame1 implements TennisGame {
   }
 
   getScore(): string {
+    compose(p => p.chain(w => some(`Win for ${w}`)), winner)
+
     const printers: ((g: GameState) => Option<string>)[] = [
       parita,
-      g => winner(g).chain(w => some(`Win for ${w}`)),
-      g => advantage(g).chain(a => some(`Advantage ${a}`))
+      compose(p => p.chain(w => some(`Win for ${w}`)), winner),
+      compose(p => p.chain(a => some(`Advantage ${a}`)), advantage)
     ];
 
     return printers
